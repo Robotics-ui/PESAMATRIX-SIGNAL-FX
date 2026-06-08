@@ -4,6 +4,8 @@ import { relations } from 'drizzle-orm';
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
   email: text('email').notNull().unique(),
+  fullName: text('full_name').notNull().default(''),
+  phoneNumber: text('phone_number').unique(),
   passwordHash: text('password_hash').notNull(),
   role: text('role', { enum: ['admin', 'provider', 'user'] }).default('user').notNull(),
   isActive: boolean('is_active').default(true).notNull(),
@@ -49,7 +51,7 @@ export const followerAccounts = pgTable('follower_accounts', {
   providerId: uuid('provider_id').references(() => providers.id, { onDelete: 'cascade' }).notNull(),
   lotMultiplier: numeric('lot_multiplier', { precision: 5, scale: 2 }).default('1.00').notNull(),
   isActive: boolean('is_active').default(true).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull()
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (t) => ({
   uniqFollower: unique().on(t.mt5AccountId, t.providerId)
 }));
@@ -57,7 +59,7 @@ export const followerAccounts = pgTable('follower_accounts', {
 export const subscriptionPlans = pgTable('subscription_plans', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
-  priceKn: numeric('price', { precision: 10, scale: 2 }).notNull(), // Amount in KES
+  priceKn: numeric('price', { precision: 10, scale: 2 }).notNull(),
   durationDays: integer('duration_days').notNull(),
   isActive: boolean('is_active').default(true).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull()
@@ -66,7 +68,9 @@ export const subscriptionPlans = pgTable('subscription_plans', {
 export const subscriptions = pgTable('subscriptions', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  planId: uuid('plan_id').references(() => subscriptionPlans.id).notNull(),
+  planId: uuid('plan_id').references(() => subscriptionPlans.id),
+  tradingDays: integer('trading_days').default(0).notNull(),
+  totalAmount: numeric('total_amount', { precision: 10, scale: 2 }).default('0.00').notNull(),
   startsAt: timestamp('starts_at').notNull(),
   expiresAt: timestamp('expires_at').notNull(),
   status: text('status', { enum: ['active', 'expired', 'cancelled'] }).default('active').notNull(),
@@ -93,7 +97,7 @@ export const trades = pgTable('trades', {
   providerId: uuid('provider_id').references(() => providers.id).notNull(),
   masterPositionId: text('master_position_id').notNull(),
   symbol: text('symbol').notNull(),
-  type: text('type').notNull(), // BUY, SELL, etc
+  type: text('type').notNull(),
   volume: numeric('volume', { precision: 10, scale: 2 }).notNull(),
   openPrice: numeric('open_price', { precision: 15, scale: 5 }).notNull(),
   closePrice: numeric('close_price', { precision: 15, scale: 5 }),
@@ -107,7 +111,7 @@ export const tradeLogs = pgTable('trade_logs', {
   tradeId: uuid('trade_id').references(() => trades.id, { onDelete: 'cascade' }).notNull(),
   followerAccountId: uuid('follower_account_id').references(() => followerAccounts.id, { onDelete: 'cascade' }).notNull(),
   followerPositionId: text('follower_position_id'),
-  action: text('action').notNull(), // OPEN, CLOSE, FAILED
+  action: text('action').notNull(),
   volume: numeric('volume', { precision: 10, scale: 2 }).notNull(),
   executionLatencyMs: integer('execution_latency_ms'),
   errorMessage: text('error_message'),
@@ -138,7 +142,41 @@ export const contacts = pgTable('contacts', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-// Relations Setup
+export const subscriptionSettings = pgTable('subscription_settings', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  feePerDay: numeric('fee_per_day', { precision: 10, scale: 2 }).default('500.00').notNull(),
+  minDays: integer('min_days').default(5).notNull(),
+  maxDays: integer('max_days').default(60).notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const masterAccounts = pgTable('master_accounts', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  providerName: text('provider_name').notNull(),
+  mt5Login: text('mt5_login').notNull(),
+  brokerName: text('broker_name').notNull(),
+  serverName: text('server_name').notNull(),
+  strategyDescription: text('strategy_description'),
+  riskLevel: text('risk_level').default('medium').notNull(),
+  winRate: numeric('win_rate', { precision: 5, scale: 2 }).default('0.00').notNull(),
+  totalTrades: integer('total_trades').default(0).notNull(),
+  monthlyReturn: numeric('monthly_return', { precision: 8, scale: 2 }).default('0.00').notNull(),
+  maxDrawdown: numeric('max_drawdown', { precision: 5, scale: 2 }).default('0.00').notNull(),
+  status: text('status').default('active').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const userProviderSubscriptions = pgTable('user_provider_subscriptions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  masterAccountId: uuid('master_account_id').references(() => masterAccounts.id, { onDelete: 'cascade' }).notNull(),
+  startedAt: timestamp('started_at').defaultNow().notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export const userRelations = relations(users, ({ many }) => ({
   accounts: many(mt5Accounts),
   subscriptions: many(subscriptions)

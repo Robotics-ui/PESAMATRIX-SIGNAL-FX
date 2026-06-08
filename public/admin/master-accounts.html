@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PMatrix — Master Accounts</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebarContainer"></div>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="topbar-title">Master Accounts</span>
+        <span class="topbar-spacer"></span>
+        <button class="btn btn-primary btn-sm" id="addBtn">+ Add Master Account</button>
+      </div>
+
+      <div class="page-body">
+        <div id="alertBox"></div>
+
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="stat-card">
+            <div class="stat-label">Total Accounts</div>
+            <div class="stat-value stat-accent" id="statTotal">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active</div>
+            <div class="stat-value" id="statActive">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Management</div>
+            <div class="stat-value" style="font-size:14px;color:var(--text-dim)">Admin Only</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Provider Name</th>
+                  <th>Broker</th>
+                  <th>Risk Level</th>
+                  <th>Win Rate</th>
+                  <th>Monthly Return</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="accountsBody">
+                <tr><td colspan="7" style="text-align:center;padding:30px"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="accountModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" id="modalTitle">Add Master Account</span>
+        <button class="modal-close" id="modalCloseBtn">✕</button>
+      </div>
+      <form id="accountForm">
+        <input type="hidden" id="editId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Provider Name</label>
+            <input type="text" id="providerName" class="form-input" placeholder="e.g. Alpha Signals" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">MT5 Login</label>
+            <input type="text" id="mt5Login" class="form-input" placeholder="12345678" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Broker Name</label>
+            <input type="text" id="brokerName" class="form-input" placeholder="ICMarkets" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Server Name</label>
+            <input type="text" id="serverName" class="form-input" placeholder="ICMarkets-Live08" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Strategy Description</label>
+          <textarea id="strategyDescription" class="form-textarea" placeholder="Describe the trading strategy…"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Risk Level</label>
+            <select id="riskLevel" class="form-select">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select id="status" class="form-select">
+              <option value="active">Active</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+          <div class="form-group">
+            <label class="form-label">Win Rate %</label>
+            <input type="number" id="winRate" class="form-input" value="0" min="0" max="100" step="0.1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Trades</label>
+            <input type="number" id="totalTrades" class="form-input" value="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Monthly Return %</label>
+            <input type="number" id="monthlyReturn" class="form-input" value="0" step="0.1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Max Drawdown %</label>
+            <input type="number" id="maxDrawdown" class="form-input" value="0" min="0" max="100" step="0.1">
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px">
+          <button type="button" class="btn btn-ghost" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/admin-master-accounts.js"></script>
+</body>
+</html>

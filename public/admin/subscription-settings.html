@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PMatrix — Subscription Settings</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebarContainer"></div>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="topbar-title">Subscription Settings</span>
+        <span class="topbar-spacer"></span>
+        <span class="topbar-badge" style="color:var(--danger);background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.2)">Admin Only</span>
+      </div>
+
+      <div class="page-body">
+        <div id="alertBox"></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Subscription Configuration</div></div>
+
+            <form id="settingsForm">
+              <div class="form-group">
+                <label class="form-label">Fee Per Trading Day (KES)</label>
+                <input type="number" id="feePerDay" class="form-input" placeholder="500" min="1" step="0.01" required>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Minimum Trading Days</label>
+                  <input type="number" id="minDays" class="form-input" placeholder="5" min="1" step="1" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Maximum Trading Days</label>
+                  <input type="number" id="maxDays" class="form-input" placeholder="60" min="1" step="1" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Subscription Status</label>
+                <div class="toggle-wrap" style="padding:10px 0">
+                  <label class="toggle">
+                    <input type="checkbox" id="isActive">
+                    <span class="toggle-track"></span>
+                  </label>
+                  <span style="font-size:13px;color:var(--text-dim)">Enable subscriptions for users</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" id="saveBtn" style="width:100%;justify-content:center">
+                Save Settings
+              </button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">Live Preview</div></div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px">This is what users will see on the subscription page:</div>
+
+            <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px">
+              <div class="info-row">
+                <span class="info-label">Fee per trading day</span>
+                <span class="info-value" id="prevFee">—</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Minimum purchase</span>
+                <span class="info-value" id="prevMin">—</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Maximum purchase</span>
+                <span class="info-value" id="prevMax">—</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Min cost (KES)</span>
+                <span class="info-value" id="prevMin$">—</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Max cost (KES)</span>
+                <span class="info-value" id="prevMax$">—</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Status</span>
+                <span id="prevStatus" class="badge badge-gray">—</span>
+              </div>
+            </div>
+
+            <div style="background:rgba(0,229,160,0.05);border:1px solid rgba(0,229,160,0.15);border-radius:8px;padding:14px;font-size:12px;color:var(--text-muted)">
+              <strong style="color:var(--accent)">Reminder:</strong> Trading days are Mon–Fri only. Weekends are automatically excluded from expiry calculations.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/admin-settings.js"></script>
+</body>
+</html>

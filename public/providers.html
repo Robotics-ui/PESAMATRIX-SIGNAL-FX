@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PMatrix — Providers</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebarContainer"></div>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="topbar-title">Providers</span>
+        <span class="topbar-spacer"></span>
+      </div>
+
+      <div class="page-body">
+        <div id="alertBox"></div>
+
+        <div class="no-sub-banner" id="noSubBanner">
+          ⚠️ You need an active subscription to follow a provider.
+          <a href="/subscription.html" style="color:#fcd34d;font-weight:600;margin-left:8px">Get a subscription →</a>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <p style="font-size:13px;color:var(--text-muted)">
+            Choose a master account to copy trades from. You can change your provider at any time, but you must have an active subscription. Only one provider can be active at a time.
+          </p>
+        </div>
+
+        <div class="providers-grid" id="providersGrid">
+          <div class="empty-state" style="grid-column:1/-1"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/providers.js"></script>
+</body>
+</html>

@@ -7,10 +7,11 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/style.css">
   <style>
-    .login-divider { height: 1px; background: var(--border); margin: 24px 0; }
-    .login-footer { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 24px; }
+    .login-footer { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 20px; }
     .pulse-dot { display: inline-block; width: 7px; height: 7px; background: var(--accent); border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+    .register-link { text-align: center; margin-top: 18px; font-size: 13px; color: var(--text-muted); }
+    .register-link a { color: var(--accent); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -37,6 +38,10 @@
         </button>
       </form>
 
+      <div class="register-link">
+        Don't have an account? <a href="/register.html">Create one</a>
+      </div>
+
       <div class="login-footer">
         <span class="pulse-dot"></span>System operational
       </div>
@@ -50,8 +55,7 @@
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const btn = document.getElementById('loginBtn');
-      btn.disabled = true;
-      btn.textContent = 'Signing in…';
+      btn.disabled = true; btn.textContent = 'Signing in…';
 
       const email = document.getElementById('emailInput').value;
       const password = document.getElementById('passwordInput').value;
@@ -67,14 +71,12 @@
           setAuth(data.accessToken, data.refreshToken, data.user);
           window.location.href = '/dashboard.html';
         } else {
-          showAlert('alertBox', 'error', data.error || 'Login failed. Check your credentials.');
-          btn.disabled = false;
-          btn.textContent = 'Sign In';
+          showAlert('alertBox', 'error', data.error || 'Login failed.');
+          btn.disabled = false; btn.textContent = 'Sign In';
         }
       } catch {
         showAlert('alertBox', 'error', 'Network error. Please try again.');
-        btn.disabled = false;
-        btn.textContent = 'Sign In';
+        btn.disabled = false; btn.textContent = 'Sign In';
       }
     });
   </script>

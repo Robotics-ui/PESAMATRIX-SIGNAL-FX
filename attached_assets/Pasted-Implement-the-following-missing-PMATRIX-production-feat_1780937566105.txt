@@ -1,0 +1,225 @@
+Implement the following missing PMATRIX production features.
+
+IMPORTANT
+
+- Integrate into the existing PMATRIX architecture.
+- Do NOT create a separate application.
+- Reuse existing authentication, PostgreSQL database, API patterns, routing, and UI design.
+- Maintain current dashboard structure.
+- Use Drizzle ORM migrations for all database changes.
+- Maintain compatibility with existing copy-trading, MetaApi, M-Pesa, Redis, and JWT systems.
+
+---
+
+FEATURE 1: USER REGISTRATION
+
+Create a complete user registration system.
+
+Requirements:
+
+- Registration page.
+- Full Name.
+- Email Address.
+- Phone Number.
+- Password.
+- Confirm Password.
+- Form validation.
+- Duplicate email prevention.
+- Duplicate phone number prevention.
+- Password hashing using secure industry standards.
+- Store users in PostgreSQL.
+- Successful registration redirects to Login page.
+- Automatically assign User role.
+
+---
+
+FEATURE 2: ADMIN SUBSCRIPTION SETTINGS
+
+Create an Admin Subscription Settings module.
+
+Administrator must be able to configure:
+
+- Subscription Fee Per Trading Day.
+- Minimum Subscription Days.
+- Maximum Subscription Days.
+- Subscription Active / Inactive Status.
+
+Store settings in PostgreSQL.
+
+Only administrators can access or modify these settings.
+
+---
+
+FEATURE 3: SUBSCRIPTION PURCHASE SYSTEM
+
+Create a subscription purchase page.
+
+Requirements:
+
+Display:
+
+- Fee Per Trading Day.
+- Minimum Trading Days.
+- Maximum Trading Days.
+
+Create a slider that allows users to select the number of subscription days.
+
+IMPORTANT:
+
+PMATRIX subscription days are TRADING DAYS ONLY.
+
+Trading days are:
+
+- Monday
+- Tuesday
+- Wednesday
+- Thursday
+- Friday
+
+Exclude:
+
+- Saturday
+- Sunday
+
+The system must calculate subscription expiry using trading days only.
+
+Example:
+
+If a user purchases 20 trading days on Friday:
+
+The system skips Saturday and Sunday and continues counting from Monday.
+
+Real-time calculation:
+
+Total Amount = Selected Trading Days × Fee Per Trading Day
+
+Display:
+
+- Selected Trading Days
+- Fee Per Trading Day
+- Total Amount
+- Estimated Expiry Date
+
+Prepare for M-Pesa payment integration.
+
+---
+
+FEATURE 4: MASTER ACCOUNT MANAGEMENT
+
+Create Master Account Management.
+
+Administrators can:
+
+- Add Master Account.
+- Edit Master Account.
+- Disable Master Account.
+- Delete Master Account.
+
+Fields:
+
+- Provider Name.
+- MT5 Login.
+- Broker Name.
+- Server Name.
+- Strategy Description.
+- Performance Statistics.
+- Risk Level.
+- Status (Active / Disabled).
+
+Store in PostgreSQL.
+
+---
+
+FEATURE 5: PROVIDER SELECTION
+
+Users can:
+
+- View available providers.
+- View provider statistics.
+- View provider description.
+- View broker information.
+- Subscribe to a provider.
+- Change provider when allowed by system rules.
+
+Display active subscription information.
+
+---
+
+FEATURE 6: DASHBOARD NAVIGATION
+
+Add:
+
+- Register
+- Subscription Plans
+- Providers
+- My Subscription
+- Master Accounts (Admin)
+- Subscription Settings (Admin)
+
+Integrate into the existing sidebar navigation.
+
+---
+
+FEATURE 7: DATABASE
+
+Create all required PostgreSQL tables and migrations.
+
+Suggested entities:
+
+- users
+- roles
+- subscription_settings
+- subscriptions
+- master_accounts
+- provider_statistics
+- user_provider_subscriptions
+
+Use Drizzle ORM as the source of truth.
+
+---
+
+FEATURE 8: SECURITY
+
+Reuse existing JWT authentication.
+
+Protect all administrative routes.
+
+Implement role-based access control.
+
+Ensure normal users cannot:
+
+- Access admin pages.
+- Modify subscription settings.
+- Modify master accounts.
+
+---
+
+FEATURE 9: UI / UX
+
+Use existing PMATRIX React + Tailwind + Radix UI design system.
+
+Requirements:
+
+- Mobile responsive.
+- Loading states.
+- Error handling.
+- Success notifications.
+- Empty states.
+- Confirmation dialogs for destructive actions.
+
+Maintain a professional trading-platform appearance.
+
+---
+
+FEATURE 10: COPY TRADING READINESS
+
+Prepare all subscription logic to integrate with the copy-trading engine.
+
+Only users with an active subscription may be assigned to a provider.
+
+Subscription expiry must automatically stop provider access.
+
+Provider changes must update copy-trading relationships without affecting other users.
+
+Do not remove or redesign existing PMATRIX functionality.
+Extend the current architecture and integrate all new features cleanly.

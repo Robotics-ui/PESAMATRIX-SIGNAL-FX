@@ -8,6 +8,9 @@ import { env } from '../config/env.js';
 import { register, login, refresh } from './controllers/auth.controller.js';
 import { uploadMedia, getMedia, deleteMedia } from './controllers/media.controller.js';
 import { getContacts, getAllContacts, createContact, updateContact, deleteContact } from './controllers/contacts.controller.js';
+import { getSubscriptionSettings, updateSubscriptionSettings } from './controllers/admin.controller.js';
+import { listMasterAccounts, adminListMasterAccounts, createMasterAccount, updateMasterAccount, deleteMasterAccount } from './controllers/masterAccounts.controller.js';
+import { getSettings, purchaseSubscription, getMySubscription, subscribeToProvider, unsubscribeFromProvider } from './controllers/subscription.controller.js';
 import { authenticateToken } from './middlewares/auth.js';
 import rateLimit from 'express-rate-limit';
 
@@ -37,19 +40,15 @@ const upload = multer({
 
 const app = express();
 
-app.use(cors({
+const corsOptions = {
   origin: 'https://pesamatrix-signal-fx-f--signalfx.replit.app',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Authorization', 'Content-Type'],
   credentials: true,
-}));
+};
 
-app.options(/.*/, cors({
-  origin: 'https://pesamatrix-signal-fx-f--signalfx.replit.app',
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Authorization', 'Content-Type'],
-  credentials: true,
-}));
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../../public')));
@@ -57,7 +56,7 @@ app.use('/uploads', express.static(uploadsDir));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200,
+  max: 300,
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -67,6 +66,7 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', service: 'pmatrix-api', timestamp: new Date().toISOString() });
 });
 
+// Auth
 app.post('/api/auth/register', register);
 app.post('/api/auth/login', login);
 app.post('/api/auth/refresh', refresh);
@@ -75,15 +75,35 @@ app.get('/api/me', authenticateToken, (req: any, res) => {
   res.json({ user: req.user });
 });
 
+// Media
 app.post('/api/media/upload', authenticateToken, upload.single('file'), uploadMedia as any);
 app.get('/api/media', authenticateToken, getMedia as any);
 app.delete('/api/media/:id', authenticateToken, deleteMedia as any);
 
+// Contacts
 app.get('/api/contacts', authenticateToken, getContacts as any);
 app.get('/api/contacts/all', authenticateToken, getAllContacts as any);
 app.post('/api/contacts', authenticateToken, createContact as any);
 app.put('/api/contacts/:id', authenticateToken, updateContact as any);
 app.delete('/api/contacts/:id', authenticateToken, deleteContact as any);
+
+// Subscription (user-facing)
+app.get('/api/subscription/settings', authenticateToken, getSettings as any);
+app.post('/api/subscription/purchase', authenticateToken, purchaseSubscription as any);
+app.get('/api/subscription/my', authenticateToken, getMySubscription as any);
+app.post('/api/subscription/provider', authenticateToken, subscribeToProvider as any);
+app.delete('/api/subscription/provider', authenticateToken, unsubscribeFromProvider as any);
+
+// Master accounts (user-facing: active only)
+app.get('/api/master-accounts', authenticateToken, listMasterAccounts as any);
+
+// Admin
+app.get('/api/admin/subscription-settings', authenticateToken, getSubscriptionSettings as any);
+app.put('/api/admin/subscription-settings', authenticateToken, updateSubscriptionSettings as any);
+app.get('/api/admin/master-accounts', authenticateToken, adminListMasterAccounts as any);
+app.post('/api/admin/master-accounts', authenticateToken, createMasterAccount as any);
+app.put('/api/admin/master-accounts/:id', authenticateToken, updateMasterAccount as any);
+app.delete('/api/admin/master-accounts/:id', authenticateToken, deleteMasterAccount as any);
 
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('[Error]', err);

@@ -1,0 +1,1 @@
+- [PMATRIX Architecture](pmatrix-arch.md) — key stack decisions, migration quirks, and sidebar pattern for this project

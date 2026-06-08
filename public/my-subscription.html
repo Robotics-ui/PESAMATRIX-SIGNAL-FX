@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PMatrix — My Subscription</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebarContainer"></div>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="topbar-title">My Subscription</span>
+        <span class="topbar-spacer"></span>
+      </div>
+
+      <div class="page-body">
+        <div id="alertBox"></div>
+
+        <!-- No subscription state -->
+        <div id="noSubCard" style="display:none">
+          <div class="empty-state" style="padding:80px 20px">
+            <div class="empty-icon">🔒</div>
+            <div class="empty-title">No Active Subscription</div>
+            <div class="empty-desc">Purchase a subscription to start copy trading.</div>
+            <a href="/subscription.html" class="btn btn-primary" style="margin-top:20px">View Subscription Plans</a>
+          </div>
+        </div>
+
+        <!-- Active subscription -->
+        <div id="subCard" style="display:none">
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Subscription Status</div>
+              </div>
+              <div id="subStatus"></div>
+            </div>
+
+            <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+              <div class="stat-card" style="padding:16px">
+                <div class="stat-label">Trading Days</div>
+                <div class="stat-value stat-accent" style="font-size:22px" id="subTradingDays">—</div>
+              </div>
+              <div class="stat-card" style="padding:16px">
+                <div class="stat-label">Days Remaining</div>
+                <div class="stat-value" style="font-size:22px" id="subDaysLeft">—</div>
+              </div>
+              <div class="stat-card" style="padding:16px">
+                <div class="stat-label">Total Paid</div>
+                <div class="stat-value" style="font-size:18px" id="subTotal">—</div>
+              </div>
+            </div>
+
+            <div style="margin:16px 0 8px">
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:6px">
+                <span>Subscription progress</span>
+                <span id="subDaysLeft2"></span>
+              </div>
+              <div class="progress-wrap">
+                <div class="progress-bar" id="subProgressBar" style="width:0%"></div>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <span class="info-label">Started</span>
+              <span class="info-value" id="subStarted">—</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Expires</span>
+              <span class="info-value" id="subExpiry">—</span>
+            </div>
+          </div>
+
+          <div id="providerSection"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/my-subscription.js"></script>
+</body>
+</html>
