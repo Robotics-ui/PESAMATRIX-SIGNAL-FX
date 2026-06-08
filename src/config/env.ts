@@ -5,18 +5,18 @@ dotenv.config();
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  PORT: z.string().transform(Number).default('3000'),
+  PORT: z.string().transform(Number).default('5000'),
   DATABASE_URL: z.string().url(),
-  REDIS_URL: z.string().url(),
+  REDIS_URL: z.string().url().default('redis://127.0.0.1:6379'),
   JWT_ACCESS_SECRET: z.string().min(16),
   JWT_REFRESH_SECRET: z.string().min(16),
-  ENCRYPTION_KEY: z.string().length(64), // Hex format (32 bytes string)
-  METAAPI_TOKEN: z.string().min(1),
-  MPESA_CONSUMER_KEY: z.string().min(1),
-  MPESA_CONSUMER_SECRET: z.string().min(1),
-  MPESA_SHORTCODE: z.string().min(1),
-  MPESA_LNM_PASSKEY: z.string().min(1),
-  MPESA_CALLBACK_URL: z.string().url(),
+  ENCRYPTION_KEY: z.string().length(64),
+  METAAPI_TOKEN: z.string().min(1).default('not_configured'),
+  MPESA_CONSUMER_KEY: z.string().min(1).default('not_configured'),
+  MPESA_CONSUMER_SECRET: z.string().min(1).default('not_configured'),
+  MPESA_SHORTCODE: z.string().min(1).default('not_configured'),
+  MPESA_LNM_PASSKEY: z.string().min(1).default('not_configured'),
+  MPESA_CALLBACK_URL: z.string().url().default('https://placeholder.example.com/callback'),
   MPESA_ENV: z.enum(['sandbox', 'live']).default('sandbox')
 });
 
