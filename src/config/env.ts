@@ -17,7 +17,7 @@ const envSchema = z.object({
   MPESA_SHORTCODE: z.string().min(1).default('not_configured'),
   MPESA_LNM_PASSKEY: z.string().min(1).default('not_configured'),
   MPESA_CALLBACK_URL: z.string().url().default('https://placeholder.example.com/callback'),
-  MPESA_ENV: z.enum(['sandbox', 'live']).default('sandbox')
+  MPESA_ENV: z.enum(['sandbox', 'live']).default('live')
 });
 
 export const env = envSchema.parse(process.env);
