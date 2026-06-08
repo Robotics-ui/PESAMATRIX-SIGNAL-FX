@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PMatrix — Dashboard</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-symbol">P</div>
+        <div class="logo-name">P<span>MATRIX</span></div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/dashboard.html" class="nav-link" data-page="dashboard">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <div class="nav-divider"></div>
+        <a href="/media.html" class="nav-link" data-page="media">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Media Library
+        </a>
+        <a href="/contacts.html" class="nav-link" data-page="contacts">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.72A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Contacts
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-avatar" id="sidebarAvatar">U</div>
+        <div class="user-meta">
+          <span class="user-email" id="sidebarEmail"></span>
+          <span class="user-role" id="sidebarRole"></span>
+        </div>
+        <button class="logout-btn" id="logoutBtn" title="Sign out">⏻</button>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="topbar-title">Dashboard</span>
+        <span class="topbar-spacer"></span>
+        <span class="topbar-badge" id="statusBadge">● Connecting…</span>
+      </div>
+
+      <div class="page-body">
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card">
+            <div class="stat-label">Media Files</div>
+            <div class="stat-value stat-accent" id="countMedia">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Contacts</div>
+            <div class="stat-value stat-accent" id="countContacts">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Role</div>
+            <div class="stat-value" id="userRoleStat" style="font-size:18px;text-transform:capitalize">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Status</div>
+            <div class="stat-value" style="font-size:18px;color:var(--success)">Active</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Media Library</div>
+                <div class="card-sub">Upload and manage images & videos</div>
+              </div>
+            </div>
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:18px">
+              Store images and videos linked to your account. Supports drag & drop, with instant preview.
+            </p>
+            <a href="/media.html" class="btn btn-primary">Open Media Library</a>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Contacts</div>
+                <div class="card-sub">Support & admin contacts directory</div>
+              </div>
+            </div>
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:18px">
+              View support contacts with phone numbers and direct WhatsApp links for quick access.
+            </p>
+            <a href="/contacts.html" class="btn btn-primary">View Contacts</a>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="card-header">
+            <div class="card-title">Copy Trading Engine</div>
+          </div>
+          <p style="font-size:13px;color:var(--text-muted)">
+            The PMatrix copy-trading engine synchronises trades from Master MT5 accounts to Follower accounts in real-time via the MetaApi cloud. Configure your MetaApi token and M-Pesa credentials in the Secrets panel to enable live trading.
+          </p>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <span class="badge badge-gray">MetaApi Integration</span>
+            <span class="badge badge-gray">M-Pesa Payments</span>
+            <span class="badge badge-gray">BullMQ Workers</span>
+            <span class="badge badge-gray">Redis Queue</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!requireAuth()) return;
+      initSidebar('dashboard');
+
+      const user = getUser();
+      const roleEl = document.getElementById('userRoleStat');
+      if (roleEl) roleEl.textContent = user.role || '—';
+
+      const badge = document.getElementById('statusBadge');
+
+      try {
+        const res = await fetch('/health');
+        const data = await res.json();
+        if (data.status === 'ok' && badge) {
+          badge.textContent = '● Online';
+          badge.style.color = 'var(--accent)';
+          badge.style.background = 'var(--accent-glow)';
+          badge.style.borderColor = 'rgba(0,229,160,0.2)';
+        }
+      } catch { if (badge) { badge.textContent = '● Offline'; badge.style.color = 'var(--danger)'; } }
+
+      const [mRes, cRes] = await Promise.all([
+        apiFetch('/api/media'),
+        apiFetch('/api/contacts'),
+      ]);
+
+      if (mRes.ok) {
+        const media = await mRes.json();
+        const el = document.getElementById('countMedia');
+        if (el) el.textContent = media.length;
+      }
+      if (cRes.ok) {
+        const contacts = await cRes.json();
+        const el = document.getElementById('countContacts');
+        if (el) el.textContent = contacts.length;
+      }
+    });
+  </script>
+</body>
+</html>

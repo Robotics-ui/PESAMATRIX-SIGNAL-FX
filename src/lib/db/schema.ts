@@ -114,6 +114,30 @@ export const tradeLogs = pgTable('trade_logs', {
   createdAt: timestamp('created_at').defaultNow().notNull()
 });
 
+export const mediaFiles = pgTable('media_files', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  filename: text('filename').notNull(),
+  originalName: text('original_name').notNull(),
+  mimeType: text('mime_type').notNull(),
+  size: integer('size').notNull(),
+  url: text('url').notNull(),
+  category: text('category').notNull(),
+  description: text('description'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const contacts = pgTable('contacts', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull(),
+  phone: text('phone').notNull(),
+  whatsapp: text('whatsapp'),
+  label: text('label').default('Support').notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // Relations Setup
 export const userRelations = relations(users, ({ many }) => ({
   accounts: many(mt5Accounts),

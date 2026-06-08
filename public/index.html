@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PMatrix — Sign In</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .login-divider { height: 1px; background: var(--border); margin: 24px 0; }
+    .login-footer { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 24px; }
+    .pulse-dot { display: inline-block; width: 7px; height: 7px; background: var(--accent); border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  </style>
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-box">
+      <div class="login-logo">
+        <div class="brand">P<span>MATRIX</span></div>
+        <div class="tagline">Copy Trading Engine</div>
+      </div>
+
+      <div id="alertBox"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="emailInput" class="form-input" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="passwordInput" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" id="loginBtn">
+          Sign In
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <span class="pulse-dot"></span>System operational
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    if (getToken()) window.location.href = '/dashboard.html';
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.textContent = 'Signing in…';
+
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setAuth(data.accessToken, data.refreshToken, data.user);
+          window.location.href = '/dashboard.html';
+        } else {
+          showAlert('alertBox', 'error', data.error || 'Login failed. Check your credentials.');
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+        }
+      } catch {
+        showAlert('alertBox', 'error', 'Network error. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+    });
+  </script>
+</body>
+</html>

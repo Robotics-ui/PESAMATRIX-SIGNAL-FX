@@ -8,6 +8,13 @@
       "when": 1780915330326,
       "tag": "0000_narrow_santa_claus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1780940000000,
+      "tag": "0001_media_contacts",
+      "breakpoints": true
     }
   ]
 }
