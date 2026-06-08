@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -35,6 +36,20 @@ const upload = multer({
 });
 
 const app = express();
+
+app.use(cors({
+  origin: 'https://pesamatrix-signal-fx-f--signalfx.replit.app',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Authorization', 'Content-Type'],
+  credentials: true,
+}));
+
+app.options(/.*/, cors({
+  origin: 'https://pesamatrix-signal-fx-f--signalfx.replit.app',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Authorization', 'Content-Type'],
+  credentials: true,
+}));
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../../public')));
