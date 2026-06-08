@@ -1,6 +1,6 @@
 // @ts-ignore
-import MetaApi from '@metaapi/metaapi-javascript-sdk';
+import MetaApi from 'metaapi.cloud-sdk';
 import { env } from './env.js';
 
 // Instantiate the production SDK object instance
-export const metaApi = new MetaApi.default(env.METAAPI_TOKEN);
+export const metaApi = new MetaApi(env.METAAPI_TOKEN);
