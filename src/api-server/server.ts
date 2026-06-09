@@ -5,7 +5,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import { env } from '../config/env.js';
-import { register, login, refresh } from './controllers/auth.controller.js';
+import { register, login, refresh, logout } from './controllers/auth.controller.js';
 import { uploadMedia, getMedia, deleteMedia } from './controllers/media.controller.js';
 import { getContacts, getAllContacts, createContact, updateContact, deleteContact } from './controllers/contacts.controller.js';
 import { getSubscriptionSettings, updateSubscriptionSettings } from './controllers/admin.controller.js';
@@ -78,9 +78,16 @@ app.post('/api/auth/register', register);
 app.post('/api/auth/login', login);
 app.post('/api/auth/refresh', refresh);
 
+// Current user — canonical path and backward-compatible alias
+app.get('/api/auth/me', authenticateToken, (req: any, res) => {
+  res.json({ user: req.user });
+});
 app.get('/api/me', authenticateToken, (req: any, res) => {
   res.json({ user: req.user });
 });
+
+// Logout — invalidate session in DB
+app.post('/api/auth/logout', authenticateToken, logout as any);
 
 // Media
 app.post('/api/media/upload', authenticateToken, upload.single('file'), uploadMedia as any);

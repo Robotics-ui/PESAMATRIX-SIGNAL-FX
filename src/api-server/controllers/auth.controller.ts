@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import { db } from '../../lib/db/connection.js';
 import { users, sessions } from '../../lib/db/schema.js';
-import { eq, or } from 'drizzle-orm';
+import { eq, or, and, lt } from 'drizzle-orm';
 import { env } from '../../config/env.js';
 
 const registerSchema = z.object({
@@ -101,5 +101,26 @@ export async function refresh(req: Request, res: Response) {
     return res.json({ accessToken: newAccessToken });
   } catch {
     return res.status(403).json({ error: 'Invalid token.' });
+  }
+}
+
+export async function logout(req: Request, res: Response) {
+  try {
+    const user = (req as any).user as { id: string };
+    const { refreshToken } = req.body;
+
+    if (refreshToken) {
+      await db.delete(sessions).where(
+        and(eq(sessions.userId, user.id), eq(sessions.refreshToken, refreshToken))
+      );
+    } else {
+      await db.delete(sessions).where(
+        and(eq(sessions.userId, user.id), lt(sessions.expiresAt, new Date(Date.now() + 1000 * 60 * 60 * 24 * 8)))
+      );
+    }
+
+    return res.json({ success: true, message: 'Logged out successfully.' });
+  } catch (error: any) {
+    return res.status(500).json({ error: 'Logout failed.' });
   }
 }
