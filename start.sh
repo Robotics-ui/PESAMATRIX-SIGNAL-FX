@@ -10,5 +10,8 @@ until redis-cli ping 2>/dev/null | grep -q PONG; do
 done
 echo "Redis is ready."
 
+echo "Running database migrations..."
+npx tsx src/lib/db/migrate.ts
+
 echo "Starting PMatrix API server..."
 exec npx tsx src/api-server/server.ts

@@ -1,10 +1,12 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import pg from 'pg';
-import { env } from '../../config/env.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const migrationClient = new pg.Pool({
-  connectionString: env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
   max: 1,
 });
 
