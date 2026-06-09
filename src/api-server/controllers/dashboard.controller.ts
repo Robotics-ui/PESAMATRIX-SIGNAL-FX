@@ -268,6 +268,58 @@ export async function getBillingSubscription(req: AuthenticatedRequest, res: Res
   }
 }
 
+// POST /api/providers/:id/subscribe
+export async function subscribeToProviderById(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { id: masterAccountId } = req.params as { id: string };
+    const userId = req.user!.id;
+
+    const sub = await getActiveSubscription(userId);
+    if (!sub) {
+      return res.status(403).json({ error: 'An active subscription is required to follow a provider.' });
+    }
+
+    const maRows = await db.select().from(masterAccounts)
+      .where(and(eq(masterAccounts.id, masterAccountId), eq(masterAccounts.status, 'active')))
+      .limit(1);
+    if (!maRows.length) return res.status(404).json({ error: 'Provider not found or inactive.' });
+
+    await db.update(userProviderSubscriptions)
+      .set({ isActive: false })
+      .where(and(eq(userProviderSubscriptions.userId, userId), eq(userProviderSubscriptions.isActive, true)));
+
+    const [pSub] = await db.insert(userProviderSubscriptions).values({
+      userId,
+      masterAccountId,
+      isActive: true,
+    }).returning();
+
+    return res.status(201).json({ success: true, subscription: pSub });
+  } catch (err: any) {
+    return res.status(400).json({ error: err.message });
+  }
+}
+
+// DELETE /api/providers/:id/unsubscribe
+export async function unsubscribeFromProviderById(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { id: masterAccountId } = req.params as { id: string };
+    const userId = req.user!.id;
+
+    await db.update(userProviderSubscriptions)
+      .set({ isActive: false })
+      .where(and(
+        eq(userProviderSubscriptions.userId, userId),
+        eq(userProviderSubscriptions.masterAccountId, masterAccountId),
+        eq(userProviderSubscriptions.isActive, true),
+      ));
+
+    return res.json({ success: true });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+}
+
 // GET /api/plans
 export async function getPlans(_req: AuthenticatedRequest, res: Response) {
   try {

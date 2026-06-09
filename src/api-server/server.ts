@@ -10,7 +10,9 @@ import { uploadMedia, getMedia, deleteMedia } from './controllers/media.controll
 import { getContacts, getAllContacts, createContact, updateContact, deleteContact } from './controllers/contacts.controller.js';
 import { getSubscriptionSettings, updateSubscriptionSettings } from './controllers/admin.controller.js';
 import { listMasterAccounts, adminListMasterAccounts, createMasterAccount, updateMasterAccount, deleteMasterAccount } from './controllers/masterAccounts.controller.js';
-import { getDashboardOverview, getProviders, getAccounts, getTrades, getBillingSubscription, getPlans } from './controllers/dashboard.controller.js';
+import { getDashboardOverview, getProviders, getAccounts, getTrades, getBillingSubscription, getPlans, subscribeToProviderById, unsubscribeFromProviderById } from './controllers/dashboard.controller.js';
+import { listUsers, getUser, updateUser, deleteUser, getAdminStats } from './controllers/adminUsers.controller.js';
+import { initiateStkPush } from './controllers/billing.controller.js';
 import { getSettings, purchaseSubscription, getMySubscription, subscribeToProvider, unsubscribeFromProvider } from './controllers/subscription.controller.js';
 import { authenticateToken } from './middlewares/auth.js';
 import rateLimit from 'express-rate-limit';
@@ -125,10 +127,20 @@ app.get('/api/master-accounts', authenticateToken, listMasterAccounts as any);
 // Dashboard & user-facing data endpoints
 app.get('/api/dashboard/overview', authenticateToken, getDashboardOverview as any);
 app.get('/api/providers', authenticateToken, getProviders as any);
+app.post('/api/providers/:id/subscribe', authenticateToken, subscribeToProviderById as any);
+app.delete('/api/providers/:id/unsubscribe', authenticateToken, unsubscribeFromProviderById as any);
 app.get('/api/accounts', authenticateToken, getAccounts as any);
 app.get('/api/trades', authenticateToken, getTrades as any);
 app.get('/api/billing/subscription', authenticateToken, getBillingSubscription as any);
+app.post('/api/billing/mpesa/stk-push', authenticateToken, initiateStkPush as any);
 app.get('/api/plans', authenticateToken, getPlans as any);
+
+// Admin user management
+app.get('/api/admin/users', authenticateToken, listUsers as any);
+app.get('/api/admin/users/:id', authenticateToken, getUser as any);
+app.patch('/api/admin/users/:id', authenticateToken, updateUser as any);
+app.delete('/api/admin/users/:id', authenticateToken, deleteUser as any);
+app.get('/api/admin/stats', authenticateToken, getAdminStats as any);
 
 // Admin
 app.get('/api/admin/subscription-settings', authenticateToken, getSubscriptionSettings as any);
