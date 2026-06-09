@@ -40,9 +40,19 @@ const upload = multer({
 
 const app = express();
 
-const allowedOrigins = process.env.REPLIT_DOMAINS
-  ? process.env.REPLIT_DOMAINS.split(',').map((d) => `https://${d.trim()}`)
-  : ['http://localhost:5000'];
+const STATIC_ORIGINS = [
+  'https://pesamatrix-signal-fx-f--signalfx.replit.app',
+];
+
+const allowedOrigins: string[] = [
+  ...STATIC_ORIGINS,
+  ...(process.env.REPLIT_DOMAINS
+    ? process.env.REPLIT_DOMAINS.split(',').map((d) => `https://${d.trim()}`)
+    : ['http://localhost:5000']),
+  ...(process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
+    : []),
+];
 
 const corsOptions = {
   origin: (origin: string | undefined, cb: (err: Error | null, allow?: boolean) => void) => {
