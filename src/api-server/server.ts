@@ -10,6 +10,7 @@ import { uploadMedia, getMedia, deleteMedia } from './controllers/media.controll
 import { getContacts, getAllContacts, createContact, updateContact, deleteContact } from './controllers/contacts.controller.js';
 import { getSubscriptionSettings, updateSubscriptionSettings } from './controllers/admin.controller.js';
 import { listMasterAccounts, adminListMasterAccounts, createMasterAccount, updateMasterAccount, deleteMasterAccount } from './controllers/masterAccounts.controller.js';
+import { getDashboardOverview, getProviders, getAccounts, getTrades, getBillingSubscription, getPlans } from './controllers/dashboard.controller.js';
 import { getSettings, purchaseSubscription, getMySubscription, subscribeToProvider, unsubscribeFromProvider } from './controllers/subscription.controller.js';
 import { authenticateToken } from './middlewares/auth.js';
 import rateLimit from 'express-rate-limit';
@@ -120,6 +121,14 @@ app.delete('/api/subscription/provider', authenticateToken, unsubscribeFromProvi
 
 // Master accounts (user-facing: active only)
 app.get('/api/master-accounts', authenticateToken, listMasterAccounts as any);
+
+// Dashboard & user-facing data endpoints
+app.get('/api/dashboard/overview', authenticateToken, getDashboardOverview as any);
+app.get('/api/providers', authenticateToken, getProviders as any);
+app.get('/api/accounts', authenticateToken, getAccounts as any);
+app.get('/api/trades', authenticateToken, getTrades as any);
+app.get('/api/billing/subscription', authenticateToken, getBillingSubscription as any);
+app.get('/api/plans', authenticateToken, getPlans as any);
 
 // Admin
 app.get('/api/admin/subscription-settings', authenticateToken, getSubscriptionSettings as any);
